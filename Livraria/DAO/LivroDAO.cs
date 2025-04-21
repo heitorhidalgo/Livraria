@@ -6,36 +6,38 @@ using System.Security.Cryptography;
 
 namespace Livraria.DAO
 {
-    public class AutorDAO : IAutorDAO
+    public class LivroDAO : ILivroDAO
     {
         private string _connectionString;
 
-        public AutorDAO(string connectionString)
+        public LivroDAO(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public void Atualizar(Autor pAutor)
+        public void Atualizar(Livro pLivro)
         {
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "UPDATE Autor SET Nome = @Nome, Nacionalidade = @Nacionalidade WHERE Id = @Id";
+                string query = "UPDATE Livro SET Título = @Título, Genero = @Genero, AnoPublicacao = @AnoPublicacao, AutorId = @AutorId WHERE Id = @Id";
 
                 SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@Nome", pAutor.Nome);
-                cmd.Parameters.AddWithValue("@Nacionalidade", pAutor.Nacionalidade);
-                cmd.Parameters.AddWithValue("@Id", pAutor.Id);
+                cmd.Parameters.AddWithValue("@Título", pLivro.Título);
+                cmd.Parameters.AddWithValue("@Genero", pLivro.Genero);
+                cmd.Parameters.AddWithValue("@AnoPublicacao", pLivro.AnoPublicacao);
+                cmd.Parameters.AddWithValue("@AutorId", pLivro.AutorId);
+                cmd.Parameters.AddWithValue("@Id", pLivro.Id);
 
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
         }
 
-        public Autor BuscarPorId(int pId)
+        public Livro BuscarPorId(int pId)
         {
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM Autor WHERE Id = @Id";
+                string query = "SELECT * FROM Livro WHERE Id = @Id";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Id", pId);
 
@@ -44,11 +46,13 @@ namespace Livraria.DAO
 
                 if (reader.Read())
                 {
-                    return new Autor()
+                    return new Livro()
                     {
                         Id = reader.GetInt32(0),
-                        Nome = reader.GetString(1),
-                        Nacionalidade = reader.GetString(2),
+                        Título = reader.GetString(1),
+                        Genero = reader.GetString(2),
+                        AnoPublicacao = reader.GetInt32(3),
+                        AutorId = reader.GetInt32(4) 
                     };
                 }
                 else
@@ -62,7 +66,7 @@ namespace Livraria.DAO
         {
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "DELETE FROM Autor WHERE Id = @Id";
+                string query = "DELETE FROM Livro WHERE Id = @Id";
 
                 SqlCommand command = new SqlCommand(query, con);
                 command.Parameters.AddWithValue("@Id", pId);
@@ -72,28 +76,30 @@ namespace Livraria.DAO
             }
         }
 
-        public void Incluir(string pNome, string pNacionalidade)
+        public void Incluir(string pTítulo, string pGenero, int pAnoPublicacao, int pAutorId)
         {
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "INSERT INTO Autor (Nome, Nacionalidade) VALUES (@Nome, @Nacionalidade)";
+                string query = "INSERT INTO Livro (Título, Genero, AnoPublicacao, AutorId) VALUES (@Título, @Genero, @AnoPublicacao, @AutorId)";
 
                 SqlCommand command = new SqlCommand(query, con);
-                command.Parameters.AddWithValue("@Nome", pNome);
-                command.Parameters.AddWithValue("@Nacionalidade", pNacionalidade);
+                command.Parameters.AddWithValue("@Título", pTítulo);
+                command.Parameters.AddWithValue("@Genero", pGenero);
+                command.Parameters.AddWithValue("@AnoPublicacao", pAnoPublicacao);
+                command.Parameters.AddWithValue("@AutorId", pAutorId);
 
                 con.Open();
                 command.ExecuteNonQuery();
             }
         }
 
-        public List<Autor> ListarTodos()
+        public List<Livro> ListarTodos()
         {
-            List<Autor> retorno = new List<Autor>();
+            List<Livro> retorno = new List<Livro>();
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                string query = "SELECT * FROM Autor";
+                string query = "SELECT * FROM Livro";
 
                 SqlCommand command = new SqlCommand(query, con);
 
@@ -103,14 +109,16 @@ namespace Livraria.DAO
 
                 while (reader.Read())
                 {
-                    Autor autor = new Autor()
+                    Livro livro = new Livro()
                     {
                         Id = (int)reader["Id"],
-                        Nome = reader["Nome"].ToString(),
-                        Nacionalidade = reader["Nacionalidade"].ToString()
+                        Título = reader["Título"].ToString(),
+                        Genero = reader["Genero"].ToString(),
+                        AnoPublicacao = (int)reader["AnoPublicacao"],
+                        AutorId = (int)reader["AutorId"]
                     };
 
-                    retorno.Add(autor);
+                    retorno.Add(livro);
                 }
             }
 
