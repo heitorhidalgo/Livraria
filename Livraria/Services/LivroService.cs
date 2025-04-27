@@ -2,6 +2,7 @@
 using Livraria.DAO;
 using Livraria.Models;
 using System.Reflection.PortableExecutable;
+using Microsoft.Data.SqlClient;
 
 namespace Livraria.Services
 {
@@ -52,5 +53,11 @@ namespace Livraria.Services
 
             _livroDAO.Deletar(pId);
         }
+
+        public List<Livro> PesquisarLivroPorNome(string nome)
+        {
+            return _livroDAO.BuscarPorNome(nome);
+        }
+
     }
 }

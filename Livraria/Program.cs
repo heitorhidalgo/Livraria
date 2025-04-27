@@ -27,6 +27,8 @@ do
     Console.WriteLine("6 - Listar Livros");
     Console.WriteLine("7 - Atualizar Livro");
     Console.WriteLine("8 - Remover Livro");
+    Console.WriteLine("9 - Pesquisar Livro por Nome");
+    Console.WriteLine("10 - Pesquisar Autor por Nome");
     Console.WriteLine("0 - Sair");
     Console.Write("Escolha uma opção: ");
     opcao = int.Parse(Console.ReadLine());
@@ -43,6 +45,8 @@ do
             case 6: ListarLivros(); break;
             case 7: AtualizarLivro(); break;
             case 8: RemoverLivro(); break;
+            case 9: PesquisarLivroPorNome(); break;
+            case 10: PesquisarAutorPorNome(); break;
             case 0: Console.WriteLine("Saindo..."); break;
             default: Console.WriteLine("Opção inválida!"); break;
         }
@@ -170,4 +174,46 @@ void RemoverLivro()
 
     livroService.RemoverLivro(id);
     Console.WriteLine("Livro removido com sucesso!");
+}
+
+void PesquisarLivroPorNome()
+{
+    Console.WriteLine("\n== Pesquisar Livro por Nome ==");
+    Console.Write("Nome do livro: ");
+    string nome = Console.ReadLine();
+
+    List<Livro> livros = livroService.PesquisarLivroPorNome(nome);
+
+    if (livros.Count == 0)
+    {
+        Console.WriteLine("Livro não encontrado.");
+    }
+    else
+    {
+        foreach (Livro c in livros)
+        {
+            Console.WriteLine($"ID: {c.Id} | Título: {c.Título} | Gênero: {c.Genero} | Ano: {c.AnoPublicacao} | Autor ID: {c.AutorId}");
+        }
+    }
+}
+
+void PesquisarAutorPorNome()
+{
+    Console.WriteLine("\n== Pesquisar Autor por Nome ==");
+    Console.Write("Nome do autor: ");
+    string nome = Console.ReadLine();
+
+    List<Autor> autores = autorService.PesquisarAutorPorNome(nome);
+
+    if (autores.Count == 0)
+    {
+        Console.WriteLine("Autor não encontrado.");
+    }
+    else
+    {
+        foreach (Autor c in autores)
+        {
+            Console.WriteLine($"ID: {c.Id} | Nome: {c.Nome} | Nacionalidade: {c.Nacionalidade}");
+        }
+    }
 }

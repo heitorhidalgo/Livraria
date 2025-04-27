@@ -116,5 +116,37 @@ namespace Livraria.DAO
 
             return retorno;
         }
+
+
+        public List<Autor> BuscarPorNome(string nome)
+        {
+            List<Autor> retorno = new List<Autor>();
+
+            using (SqlConnection con = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT * FROM Autor WHERE Nome = @Nome";
+
+                SqlCommand command = new SqlCommand(query, con);
+                command.Parameters.AddWithValue("@Nome", nome);
+
+                con.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Autor autor = new Autor()
+                    {
+                        Id = (int)reader["Id"],
+                        Nome = reader["Nome"].ToString(),
+                        Nacionalidade = reader["Nacionalidade"].ToString()
+                    };
+
+                    retorno.Add(autor);
+                }
+            }
+
+            return retorno;
+        }
     }
 }
